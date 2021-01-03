@@ -11,9 +11,10 @@ For each trial of the task, participants get two options.
 
 ## Requirement
 
-numpy >= 1.17.2
-PyMC3 >=3.9.2
+- numpy >= 1.17.2
+- PyMC3 >=3.9.2
 
 
-Reference: Bayesian Cognitive Modeling(Cambridge University Press, 2014) 
+## Reference
+- Bayesian Cognitive Modeling(Cambridge University Press, 2014) 
 https://www.cambridge.org/core/books/bayesian-cognitive-modeling/bart-model-of-risk-taking/A6249E1FFA080064C986B871D57D03B8
