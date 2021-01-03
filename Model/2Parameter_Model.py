@@ -22,19 +22,19 @@ def dt_Participant(N, path):
     df['poped'] = df['pumps'] == df['pop_point']
     return df
     
-def BernData(N, max_pump):
+def BernData(N, Max_pump):
     data = dt_UijongParticipant(N)['pumps']
     new_data = []
     for pumps in data:
-        p = np.concatenate((np.ones(pumps), np.zeros(max_pump-pumps)), axis = 0)
+        p = np.concatenate((np.ones(pumps), np.zeros(Max_pump-pumps)), axis = 0)
         new_data.append(p)
     return np.array(new_data)
 
-def 2Parameter_Model(N_people, SEED, max_pump = 128)
+def 2Parameter_Model(N_people, SEED, Max_pump = 128)
     '''
     N_people: The Number of participants you have.
     SEED: Set radnom seed of MCMC sampling.
-    max_pump: Maxiumum trial of your BART setting. My setting is 128.
+    Max_pump: Maxiumum trial of your BART setting. My setting is 128.
     '''
     traces_gamma = []
     traces_beta = []
@@ -48,7 +48,7 @@ def 2Parameter_Model(N_people, SEED, max_pump = 128)
             beta = pm.Uniform("beta",0,10)
             omega_k = -gamma_plus/np.log(1-p)        
             for i in range(len(obs)):
-                for l in range(max_pump):
+                for l in range(Max_pump):
                     theta_lk = 1/(1+np.exp(beta*(l - omega_k)))
                     prob = pm.Bernoulli("prob_{}_{}".format(i,l), p=theta_lk, observed = obs[i][l])        
             _trace = pm.sample_smc(1000, cores = 6, random_seed = SEED)
