@@ -27,7 +27,7 @@ def BernData(N, Max_pump):
         new_data.append(p)
     return np.array(new_data)
 
-def Two_Parameter_Model(N_people, SEED, Max_pump = 128)
+def Two_Parameter_Model(N_people, SEED, Max_pump = 128):
     '''
     N_people: The Number of participants you have.
     SEED: Set radnom seed of MCMC sampling.
