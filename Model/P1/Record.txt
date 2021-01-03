@@ -1,0 +1,30 @@
+Trial1 Choosing number : 15 Explosion number : 36 Earn Money : 30 Total Money : 30Avgerage pump15
+Trial2 Choosing number : 50 Explosion number : 74 Earn Money : 100 Total Money : 130Avgerage pump32.5
+Trial3 Choosing number : 51 Explosion number : 70 Earn Money : 102 Total Money : 232Avgerage pump38.66667
+Trial4 Choosing number : Fail Explosion number : 43 Earn Money : 0  Total Money : 232
+Trial5 Choosing number : 52 Explosion number : 74 Earn Money : 104 Total Money : 336Avgerage pump42
+Trial6 Choosing number : 66 Explosion number : 95 Earn Money : 132 Total Money : 468Avgerage pump46.8
+Trial7 Choosing number : Fail Explosion number : 4 Earn Money : 0  Total Money : 468
+Trial8 Choosing number : Fail Explosion number : 51 Earn Money : 0  Total Money : 468
+Trial9 Choosing number : 50 Explosion number : 95 Earn Money : 100 Total Money : 568Avgerage pump47.33333
+Trial10 Choosing number : Fail Explosion number : 14 Earn Money : 0  Total Money : 568
+Trial11 Choosing number : Fail Explosion number : 40 Earn Money : 0  Total Money : 568
+Trial12 Choosing number : Fail Explosion number : 25 Earn Money : 0  Total Money : 568
+Trial13 Choosing number : 68 Explosion number : 77 Earn Money : 136 Total Money : 704Avgerage pump50.28571
+Trial14 Choosing number : 25 Explosion number : 70 Earn Money : 50 Total Money : 754Avgerage pump47.125
+Trial15 Choosing number : 30 Explosion number : 51 Earn Money : 60 Total Money : 814Avgerage pump45.22222
+Trial16 Choosing number : 40 Explosion number : 48 Earn Money : 80 Total Money : 894Avgerage pump44.7
+Trial17 Choosing number : 40 Explosion number : 66 Earn Money : 80 Total Money : 974Avgerage pump44.27273
+Trial18 Choosing number : Fail Explosion number : 5 Earn Money : 0  Total Money : 974
+Trial19 Choosing number : Fail Explosion number : 58 Earn Money : 0  Total Money : 974
+Trial20 Choosing number : Fail Explosion number : 38 Earn Money : 0  Total Money : 974
+Trial21 Choosing number : 25 Explosion number : 28 Earn Money : 50 Total Money : 1024Avgerage pump42.66667
+Trial22 Choosing number : Fail Explosion number : 40 Earn Money : 0  Total Money : 1024
+Trial23 Choosing number : 34 Explosion number : 46 Earn Money : 68 Total Money : 1092Avgerage pump42
+Trial24 Choosing number : Fail Explosion number : 51 Earn Money : 0  Total Money : 1092
+Trial25 Choosing number : Fail Explosion number : 4 Earn Money : 0  Total Money : 1092
+Trial26 Choosing number : 32 Explosion number : 59 Earn Money : 64 Total Money : 1156Avgerage pump41.28571
+Trial27 Choosing number : 39 Explosion number : 73 Earn Money : 78 Total Money : 1234Avgerage pump41.13334
+Trial28 Choosing number : 39 Explosion number : 78 Earn Money : 78 Total Money : 1312Avgerage pump41
+Trial29 Choosing number : 51 Explosion number : 77 Earn Money : 102 Total Money : 1414Avgerage pump41.58823
+Trial30 Choosing number : Fail Explosion number : 9 Earn Money : 0  Total Money : 1414
