@@ -2,9 +2,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import pymc3 as pm
-import theano
-import theano.tensor as tt
-import seaborn as sns
 import time
 
 print('Running on PyMC3 v{}'.format(pm.__version__))
