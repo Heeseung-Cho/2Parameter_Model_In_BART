@@ -5,9 +5,12 @@ import pymc3 as pm
 import time
 
 print('Running on PyMC3 v{}'.format(pm.__version__))
-path = "C:/Users/ChoHeeseung/Desktop/BART/Uijong_New/People" ##Set path your record files
 
 def dt_Participant(N, path):
+    '''
+    N: Index of record file
+    path: path where your record file exist.    
+    '''
     file = path+"/P{}/Record.txt".format(N)
     tmp = pd.read_csv(file, ' ', header = None)
     df = tmp[[4,8]].replace('Fail',0).astype(int)
@@ -19,27 +22,33 @@ def dt_Participant(N, path):
     df['poped'] = df['pumps'] == df['pop_point']
     return df
     
-def BernData(N, Max_pump):
-    data = dt_UijongParticipant(N)['pumps']
+def BernData(N, Max_pump, path):
+    '''
+    N: Index of record file
+    Max_pump: Maxiumum trial of your BART setting.
+    path: path where your record file exist.    
+    '''
+    data = dt_Participant(N, path)['pumps']
     new_data = []
     for pumps in data:
-        p = np.concatenate((np.ones(pumps), np.zeros(Max_pump-pumps)), axis = 0)
+        p = np.concatenate((np.ones(pumps), np.zeros(Max_pump - pumps)), axis = 0)
         new_data.append(p)
     return np.array(new_data)
 
-def Two_Parameter_Model(N_people, SEED, Max_pump = 128):
+def Two_Parameter_Model(Path, N_people, SEED, Max_pump = 128):
     '''
+    Path: 
     N_people: The Number of participants you have.
     SEED: Set radnom seed of MCMC sampling.
     Max_pump: Maxiumum trial of your BART setting. My setting is 128.
     '''
     traces_gamma = []
     traces_beta = []
-    for part in range(1,N_people):
+    for part in range(1,N_people+1):
         with pm.Model() as total_model:
             start_time = time.time()        
             p = 0.15    
-            obs = BernData(part)
+            obs = BernData(part, Max_pump, Path)
             #Pth participant            
             gamma_plus = pm.Uniform("gamma_plus",0,10) 
             beta = pm.Uniform("beta",0,10)
