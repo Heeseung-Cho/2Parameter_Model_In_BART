@@ -9,6 +9,10 @@ For each trial of the task, participants get two options.
 1. Stop the pump and secure the amount of money of the current balloon.
 2. The other is to take the risk to pump balloon, resulting in larger balloon(more reward) or exploded balloons.  
 
+## Model Explain
+
+![./Model_Pseudo.PNG](Model_Pseudo.png)
+
 ## Requirement
 
 - numpy >= 1.17.2
