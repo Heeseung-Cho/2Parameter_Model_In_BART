@@ -22,3 +22,5 @@ For each trial of the task, participants get two options.
 ## Reference
 - Bayesian Cognitive Modeling(Cambridge University Press, 2014) 
 https://www.cambridge.org/core/books/bayesian-cognitive-modeling/bart-model-of-risk-taking/A6249E1FFA080064C986B871D57D03B8
+- Cognitive model decomposition of the BART: Assessment and application(Don van Ravenzwaaij, Gilles Dutilh, Eric-Jan, Wagenmakers, Journal of Mathematical Psychology
+Volume 55, Issue 1, February 2011, Pages 94-105)  https://www.sciencedirect.com/science/article/pii/S0022249610001112
