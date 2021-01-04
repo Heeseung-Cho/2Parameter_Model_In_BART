@@ -11,7 +11,7 @@ For each trial of the task, participants get two options.
 
 ## Model Explain
 
-![./Model_Pseudo.PNG](Model_Pseudo.png)
+![](./Model_Pseudo.PNG)
 
 ## Requirement
 
