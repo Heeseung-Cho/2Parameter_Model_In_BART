@@ -37,7 +37,7 @@ def BernData(N, Max_pump, path):
 
 def Two_Parameter_Model(Path, N_people, SEED, Max_pump = 128):
     '''
-    Path: 
+    Path: Path where your record file exist.
     N_people: The Number of participants you have.
     SEED: Set radnom seed of MCMC sampling.
     Max_pump: Maxiumum trial of your BART setting. My setting is 128.
