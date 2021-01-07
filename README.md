@@ -13,6 +13,9 @@ For each trial of the task, participants get two options.
 
 ![](./Model_Pseudo.PNG)
 
+gamma(>=0): Risk taking. If gamma is large, decision maker believes the balloon will pump late.
+beta(>=0): Behavioral consistency. If beta is large, decision maker does not change their belief.
+
 ## Requirement
 
 - numpy >= 1.17.2
