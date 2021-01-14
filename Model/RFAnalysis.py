@@ -99,7 +99,7 @@ def FullFoldRFR(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'R2', rando
     '''
     Input: Input data(X)
     Label: Label data(y), It must be series type.
-    Fold: Select Fold want to use. 'KFold','Stratified'
+    Fold: Select Fold want to use. 'KFold','Shuffle'
     nfolds: Number of folds
     optimize: Optimizing target in Pycaret (Default: 'R2')
     '''
