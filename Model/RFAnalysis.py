@@ -30,7 +30,6 @@ def FullFoldRFC(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'AUC', thre
     nfolds: Number of folds
     optimize: Optimizing target in Pycaret (Default: 'AUC')
     '''
-    folds = KFold(n_splits = nfolds, shuffle = True, random_state = 1234)
     X = Input
     y = Label
     if Fold == 'KFold':
@@ -46,7 +45,7 @@ def FullFoldRFC(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'AUC', thre
                            , silent = True
                            , session_id = random_state)       
     rf = classification.create_model('rf')
-    tuned_rf = classification.tune_model(rf,optimize = 'AUC')
+    tuned_rf = classification.tune_model(rf, n_iter = 18, optimize = optimize, choose_better = True)
     final_model_rf = classification.finalize_model(tuned_rf)
     RFC_best = final_model_rf
 
@@ -72,12 +71,11 @@ def FullFoldRFC(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'AUC', thre
         rf_importance_df = pd.concat([rf_importance_df, fold_importance_df], axis=0)
 
         accuracy = accuracy_score(val_label, RFC_best.predict(val_data))
-        #rf_preds += RFC_best.predict_proba(X)[:,1] / (nfolds)
+        rf_preds += RFC_best.predict_proba(X)[:,1] / (nfolds)
         acc_score.append(accuracy)    
         print(f'Mean accuracy score: {accuracy:.3}')    
 
-    #Plot Confusion Matrix
-    rf_preds = RFC_best.predict_proba(X)[:,1]
+    #Plot Confusion Matrix    
     predicted = rf_preds > 0.5
     conf_mat = confusion_matrix(y, predicted)
 
@@ -120,7 +118,7 @@ def FullFoldRFR(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'R2', rando
                            , numeric_features = X.columns.drop('Sex')                           
                            , session_id = random_state)       
     rf = regression.create_model('rf')
-    tuned_rf = regression.tune_model(rf,optimize = optimize)
+    tuned_rf = regression.tune_model(rf, n_iter = 18, optimize = optimize, choose_better = True)
     final_model_rf = regression.finalize_model(tuned_rf)
     RFR_best = final_model_rf
 
@@ -145,12 +143,11 @@ def FullFoldRFR(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'R2', rando
         rf_importance_df = pd.concat([rf_importance_df, fold_importance_df], axis=0)
 
         accuracy = mean_squared_error(val_label, RFR_best.predict(val_data))
-        #rf_preds += RFR_best.predict(X) / (nfolds)
+        rf_preds += RFR_best.predict(X) / (nfolds)
         acc_score.append(accuracy)    
         print(f'Mean accuracy score: {accuracy:.3}')    
 
-    #Predict
-    rf_preds = RFR_best.predict(X)
+    #Predict    
     print(f'Total accuracy score: {mean_squared_error(y, rf_preds):.3}')
 
     #Plot feature importance
