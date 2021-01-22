@@ -17,9 +17,11 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import GridSearchCV,cross_validate,cross_val_predict
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
-from sklearn.metrics import roc_auc_score,mean_squared_error
+from sklearn.metrics import roc_auc_score,mean_squared_error, r2_score
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
-
+#shap
+import shap
 
 ### Explainable - Random Forest Classifier
 def FullFoldRFC(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'AUC', threshold = 0.5, random_state = 123456):
@@ -47,12 +49,13 @@ def FullFoldRFC(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'AUC', thre
     rf = classification.create_model('rf')
     tuned_rf = classification.tune_model(rf, n_iter = 18, optimize = optimize, choose_better = True)
     final_model_rf = classification.finalize_model(tuned_rf)
-    RFC_best = final_model_rf
+    RFC_best = RandomForestClassifier(**final_model_rf.get_params())
 
     feature_names = ['F{}'.format(i) for i in range(X.shape[1])]
     fold_pred = np.zeros(len(X))
     rf_preds = np.zeros(len(X))
     rf_importance_df = pd.DataFrame()
+    shap_values = np.zeros(shape = X.shape)
     #oob_score = []
     acc_score = []
     best_score = []
@@ -60,7 +63,8 @@ def FullFoldRFC(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'AUC', thre
         print("fold n°{}".format(fold_))
         trn_data = X.iloc[trn_idx]; trn_label = y.iloc[trn_idx]
         val_data = X.iloc[val_idx]; val_label = y.iloc[val_idx]
-
+        
+        ## Fitting
         RFC_best.fit(trn_data,trn_label)
         fold_pred[val_idx] = RFC_best.predict(val_data)
 
@@ -74,7 +78,11 @@ def FullFoldRFC(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'AUC', thre
         rf_preds += RFC_best.predict_proba(X)[:,1] / (nfolds)
         acc_score.append(accuracy)    
         print(f'Mean accuracy score: {accuracy:.3}')    
-
+        
+        ## Shap        
+        explainer = shap.TreeExplainer(RFC_best)
+        shap_values += explainer.shap_values(X) / (nfolds)        
+        
     #Plot Confusion Matrix    
     predicted = rf_preds > 0.5
     conf_mat = confusion_matrix(y, predicted)
@@ -91,8 +99,15 @@ def FullFoldRFC(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'AUC', thre
     sns.barplot(x = 'importance', y = 'feature', data = rf_importance_df, order = order, ci = 'sd', palette= clrs)
     plt.title('Random Forest over {} Folds'.format(nfolds))
     plt.tight_layout()
+    plt.show()    
     print("Best Acc score: {:<8.5f}".format(np.amax(acc_score)))
-    return [RFC_best,y,predicted]
+    
+    ### SHAP Analysis
+    print('========================================================================')
+    print("SHAP Analysis : Classifier")
+    shap.summary_plot(shap_values, features=X, feature_names=X.columns)
+    plt.show()    
+    return [RFC_best,y,predicted, explainer, shap_values]
     
 ### Explainable -Random Forest Regressor
 def FullFoldRFR(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'R2', random_state = 123456):
@@ -120,11 +135,12 @@ def FullFoldRFR(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'R2', rando
     rf = regression.create_model('rf')
     tuned_rf = regression.tune_model(rf, n_iter = 18, optimize = optimize, choose_better = True)
     final_model_rf = regression.finalize_model(tuned_rf)
-    RFR_best = final_model_rf
+    RFR_best = RandomForestRegressor(**final_model_rf.get_params())
 
     feature_names = ['F{}'.format(i) for i in range(X.shape[1])]
     fold_pred = np.zeros(len(X))
     rf_preds = np.zeros(len(X))
+    shap_values = np.zeros(shape = X.shape)
     rf_importance_df = pd.DataFrame()
     acc_score = []
     best_score = []
@@ -146,6 +162,10 @@ def FullFoldRFR(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'R2', rando
         rf_preds += RFR_best.predict(X) / (nfolds)
         acc_score.append(accuracy)    
         print(f'Mean accuracy score: {accuracy:.3}')    
+        
+        ## Shap
+        explainer = shap.TreeExplainer(RFR_best)
+        shap_values += explainer.shap_values(X) / (nfolds)        
 
     #Predict    
     print(f'Total accuracy score: {mean_squared_error(y, rf_preds):.3}')
@@ -158,8 +178,15 @@ def FullFoldRFR(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'R2', rando
     sns.barplot(x = 'importance', y = 'feature', data = rf_importance_df, order = order, ci = 'sd', palette= clrs)
     plt.title('Random Forest over {} Folds'.format(nfolds))
     plt.tight_layout()
+    plt.show()    
     print("Best Acc score: {:<8.5f}".format(np.amin(acc_score)))
-    return [RFR_best,y,rf_preds]
+
+    ### SHAP Analysis
+    print('========================================================================')
+    print("SHAP Analysis : Regression")
+    shap.summary_plot(shap_values, features=X, feature_names=X.columns)
+    plt.show()
+    return [RFR_best,y,rf_preds, explainer, shap_values]
     
     
     
@@ -190,12 +217,13 @@ def PredCVRFC(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'AUC', thresh
     rf = classification.create_model('rf')
     tuned_rf = classification.tune_model(rf, n_iter = 18, optimize = optimize, choose_better = True)
     final_model_rf = classification.finalize_model(tuned_rf)
-    RFC_best = final_model_rf
+    RFC_best = RandomForestClassifier(**final_model_rf.get_params())
 
     feature_names = ['F{}'.format(i) for i in range(X.shape[1])]
     fold_pred = np.zeros(len(X_train))
     rf_preds = np.zeros(len(X_test))
     rf_importance_df = pd.DataFrame()
+    shap_values = np.zeros(shape = X_train.shape)
     #oob_score = []
     acc_score = []
     best_score = []
@@ -218,6 +246,10 @@ def PredCVRFC(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'AUC', thresh
         acc_score.append(accuracy)    
         print(f'Mean accuracy score: {accuracy:.3}')    
 
+        ## Shap
+        explainer = shap.TreeExplainer(RFC_best)
+        shap_values += explainer.shap_values(X_test) / (nfolds)
+        
     #Plot Confusion Matrix    
     predicted = rf_preds > threshold
     conf_mat = confusion_matrix(y_test, predicted)
@@ -235,8 +267,15 @@ def PredCVRFC(Input,Label, Fold = 'KFold', nfolds = 10, optimize = 'AUC', thresh
     sns.barplot(x = 'importance', y = 'feature', data = rf_importance_df, order = order, ci = 'sd', palette= clrs)
     plt.title('Random Forest over {} Folds'.format(nfolds))
     plt.tight_layout()
+    plt.show()
     print("Best Acc score: {:<8.5f}".format(np.amax(acc_score)))
-    return [RFC_best,y_test,predicted]
+        
+    ### SHAP Analysis
+    print('========================================================================')
+    print("SHAP Analysis : Classifier")
+    shap.summary_plot(shap_values, features=X_test, feature_names=X_test.columns)
+    plt.show()
+    return [RFC_best,y_test,predicted, explainer, shap_values]
     
 ### Prediction - Random Forest Regressor
 def PredCVRFR(Input,Label, split = 0.3, Fold = 'KFold', nfolds = 10, optimize = 'R2', random_state = 123456):
@@ -248,6 +287,7 @@ def PredCVRFR(Input,Label, split = 0.3, Fold = 'KFold', nfolds = 10, optimize = 
     nfolds: Number of folds (Default: 10)
     optimize: Optimizing target in Pycaret (Default: 'R2')
     '''
+
     X = Input
     y = Label
     X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=split, random_state=random_state)
@@ -257,6 +297,8 @@ def PredCVRFR(Input,Label, split = 0.3, Fold = 'KFold', nfolds = 10, optimize = 
         folds = ShuffleSplit(n_splits=nfolds, test_size = 0.25, random_state=random_state)
 
     #Setup tuned model from pycaret
+    regression.set_config('X', X_train)
+    regression.set_config('y', y_train)
     setup_data = pd.concat([X_train,y_train], axis = 1)
     reg = regression.setup(data = setup_data
                            , target = y_train.name
@@ -266,11 +308,12 @@ def PredCVRFR(Input,Label, split = 0.3, Fold = 'KFold', nfolds = 10, optimize = 
     rf = regression.create_model('rf')
     tuned_rf = regression.tune_model(rf, n_iter = 18, optimize = optimize, choose_better = True)
     final_model_rf = regression.finalize_model(tuned_rf)
-    RFR_best = final_model_rf
+    RFR_best = RandomForestRegressor(**final_model_rf.get_params())
 
     feature_names = ['F{}'.format(i) for i in range(X_train.shape[1])]
     fold_pred = np.zeros(len(X_train))
     rf_preds = np.zeros(len(X_test))
+    shap_values = np.zeros(shape = X_train.shape)
     rf_importance_df = pd.DataFrame()
     acc_score = []
     best_score = []
@@ -293,6 +336,10 @@ def PredCVRFR(Input,Label, split = 0.3, Fold = 'KFold', nfolds = 10, optimize = 
         acc_score.append(accuracy)    
         print(f'Mean accuracy score: {accuracy:.3}')    
 
+        ## Shap
+        explainer = shap.TreeExplainer(RFR_best)
+        shap_values += explainer.shap_values(X_test) / (nfolds)
+        
     #Predict    
     plt.hist(y_test, label = 'True')
     plt.hist(rf_preds, label = 'Pred', alpha = 0.5)
@@ -309,5 +356,12 @@ def PredCVRFR(Input,Label, split = 0.3, Fold = 'KFold', nfolds = 10, optimize = 
     sns.barplot(x = 'importance', y = 'feature', data = rf_importance_df, order = order, ci = 'sd', palette= clrs)
     plt.title('Random Forest over {} Folds'.format(nfolds))
     plt.tight_layout()
+    plt.show()
     print("Best Acc score: {:<8.5f}".format(np.amin(acc_score)))
-    return [RFR_best,y_test,rf_preds]
+    
+    ### SHAP Analysis
+    print('========================================================================')
+    print("SHAP Analysis : Regression")
+    shap.summary_plot(shap_values, features=X_test, feature_names=X_test.columns)
+    plt.show()
+    return [RFR_best,y_test,rf_preds, explainer, shap_values]
