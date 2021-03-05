@@ -19,9 +19,9 @@ Beta(>=0): Behavioral consistency. If beta is large, decision maker does not cha
 
 ## Requirement
 
-- numpy >= 1.17.2
-- PyMC3 >=3.9.2
-
+- numpy <= 1.17.2
+- PyMC3 <=3.9.2
+- arviz <= 0.10.0
 
 ## Reference
 - Bayesian Cognitive Modeling(Cambridge University Press, 2014) 
